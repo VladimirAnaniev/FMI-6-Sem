@@ -1,0 +1,103 @@
+---
+title: "Categorical Data"
+output: html_notebook
+---
+```{r}
+library('MASS')
+survey
+```
+
+### Зад. 2.
+Въз основа на данните пресметнете вероятностите:
+- Случайно избран човек да се окаже редовен пушач
+```{r}
+smoke = survey$Smoke
+prop.table(table(smoke))['Regul']
+```
+
+- Случайно избран яовек да се окаже редовно пушещ мъж.
+```{r}
+sex = survey$Sex
+prop.table(table(sex, smoke))['Male', 'Regul']
+```
+
+- Случайно избран мъж да се окаже редовен пушач
+```{r}
+prop.table(table(smoke[sex == 'Male']))['Regul']
+
+```
+
+- Случайно избран редовен пушач да се окаже мъж
+```{r}
+prop.table(table(sex[smoke == 'Regul']))['Male']
+```
+
+### Зад. 3.
+Представете графично данните за тютюнопушенето в зависимост от пола
+```{r}
+pie(table(smoke))
+barplot(table(smoke))
+barplot(table(sex, smoke), beside = T, legend = T)
+barplot(prop.table(table(sex, smoke ), 2), beside = T, legend = T)
+```
+
+### Зад. 4.
+Пресметнете оценки - средно, медиана, квартили, стандартно отклонение и т.н за височината на студентите.
+```{r}
+height = survey$Height
+mean(height, na.rm = TRUE)
+median(height, na.rm = TRUE)
+quantile(height, na.rm = TRUE)
+sd(height, na.rm = TRUE)
+
+summary(height)
+```
+
+Каква част от студентите се различават от средната височина с неповече от едно (две, три) стандартно отклонение?
+```{r}
+mean = mean(height, na.rm = TRUE)
+sd = sd(height, na.rm = TRUE)
+
+sum(height < mean + sd & height > mean - sd, na.rm = TRUE)
+
+```
+
+### Зад. 5.
+Представете графично височината на студентите
+```{r}
+hist(height)
+```
+
+### Зад. 6.
+Направете хистограма за пулса на студентите. Добавете плътността
+```{r}
+pulse = survey$Pulse
+hist(pulse, prob=TRUE)
+lines(density(pulse, na.rm = TRUE))
+```
+
+### Зад. 6.
+Разделете студентите според възрастта им на три групи:
+А - до 20г.
+B - от 20 до 25г
+C - над 25г.
+```{r}
+A = age < 20
+B = age >= 20 & age <= 25
+C = age > 25
+```
+Представете графично.
+```{r}
+ACount = length(age[A])
+BCount = length(age[B])
+CCount = length(age[C])
+
+pie(c(ACount, BCount, CCount), labels = c('< 20', '20 - 25', '25+'))
+```
+
+Направете таблица за разпределението на пушачите в различните възрасти, представете графично.
+```{r}
+# TODO
+```
+
+

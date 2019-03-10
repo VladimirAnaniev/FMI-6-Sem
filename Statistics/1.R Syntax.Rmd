@@ -1,0 +1,123 @@
+---
+title: "First Exercise"
+output: html_notebook
+---
+
+### Зад. 1. 
+Създайте вектор { 8, 3, 8, 7, 15, 9, 12, 4, 9, 10, 5, 1 }. 
+```{r}
+vect = c(8, 3, 8, 7, 15, 9, 12, 4, 9, 10, 5, 1)
+vect
+```
+Превърнете вектора в матрица 4x3.
+```{r}
+mat = matrix(vect, nrow=4, ncol=3)
+mat
+```
+Задайте имена на редовете на матрицата - a, b ... 
+```{r}
+rownames(mat) = c('a', 'b', 'c', 'd')
+mat
+```
+Добавете още една колона съдържаща нечетните числа - 1, 3, 5 ...
+```{r}
+mat = cbind(mat, c(1, 3, 5, 7))
+mat
+```
+Сортирайте матрицата по първа колона (по първа и втора колона) в нарастващ ред.
+```{r}
+sortedFirst = mat[order(mat[,1])]
+sortedFirstAndSecond = mat[order(mat[,1], mat[,2])]
+sortedFirst
+sortedFirstAndSecond
+```
+
+### Зад. 2.
+Разгледайте данните 'homedata' от пакета 'UsingR'. 
+```{r}
+library(UsingR)
+homedata
+```
+Определете:
+
+- най-скъпата и най-евтината къща през 2000г., техните цени през 1970г.
+```{r}
+mostExpensive = homedata[homedata['y2000'] == max(homedata['y2000'])]
+mostExpensive
+
+leastExpensive = homedata[homedata['y2000'] == min(homedata['y2000'])]
+leastExpensive
+```
+
+- Цените на 5-те най-скъпи къщи през 2000г.
+```{r}
+sortedPrices2000 = sort(homedata$y2000, decreasing=TRUE)
+mostExpensive = head(sortedPrices2000, n=5)
+mostExpensive
+```
+
+- броят на къщите по-скъпи от 750000 през 2000г.
+```{r}
+y2000 = homedata$y2000
+length(y2000[y2000 > 750000])
+```
+
+- средната цена през 1970г. на къщите, по скъпи от 750000 през 2000г.
+```{r}
+#mean(homedata['y1970'][homedata['y2000'] > 750000])
+
+y2000 = homedata$y2000
+y1970 = homedata$y1970
+mean(y1970[y2000>750000])
+
+```
+
+- Цената през 2000г. на тези къщи, чиято цена е намаляла.
+```{r}
+y2000[y2000<y1970]
+```
+
+- 10-те къщи с най-голямо процентно увеличение на цената.
+```{r}
+increaseProc = (y2000 - y1970)/ y2000
+order(increaseProc, decreasing = TRUE)[1: 10]
+
+```
+
+### Зад. 3.
+Разгледайте 'survey' от пакета 'MASS'.
+```{r}
+library('MASS')
+survey
+```
+Намерете:
+- броя на мъжете
+```{r}
+sex = survey$Sex
+table(sex)['Male']
+```
+- броя на мъжете пушачи
+```{r}
+smoke = survey$Smoke
+maleSmokers = table(sex, smoke)['Male', -2]
+maleSmokers
+
+sum(maleSmokers)
+```
+
+- Средната височина на мъжете
+```{r}
+height = survey$Height
+mean(height[sex == 'Male'], na.rm = TRUE)
+```
+
+- височината и пола на 6-те най-млади студента
+```{r}
+age = survey$Age
+youngest = order(age)[1: 6]
+age[youngest]
+
+height[youngest]
+
+sex[youngest]
+```
