@@ -14,10 +14,4 @@ object Main extends App {
   println(zipMap(List(3, 6), List(20, 30, 40), (x, y) => y - x)) // List(17, 24)
 
   println(countCoinChangeVariants(List(1, 2, 5), 6)) // 5
-
-  val queue = Queue(List(1,2,3))
-  println(queue.peek) // 1
-  println(queue.pop.peek) // 2
-  println(queue.push(42).size) // 4
-  println(Queue.empty.isEmpty) // true
 }
