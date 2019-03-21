@@ -1,5 +1,7 @@
 package homework1
 
+import java.util.NoSuchElementException
+
 import org.scalatest.FunSuite
 
 class QueueTest extends FunSuite {
@@ -7,6 +9,18 @@ class QueueTest extends FunSuite {
     val empty = Queue.empty
     assert(empty.size == 0)
     assert(empty.isEmpty)
+  }
+
+  test("Empty Queue should throw exception on peek and pop") {
+    val empty = Queue.empty
+
+    assertThrows[NoSuchElementException] {
+      empty.peek
+    }
+
+    assertThrows[NoSuchElementException] {
+      empty.pop
+    }
   }
 
   test("Queue with 3 elements should have size 3 and not be empty") {
