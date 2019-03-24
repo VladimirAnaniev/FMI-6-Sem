@@ -1,0 +1,94 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+library('MASS')
+data("survey")
+survey
+```
+
+## Зад.1
+Определете средното **Xn** и стандартното **Sn** отклонение за височината на студентите
+```{r}
+height = survey$Height
+Xn = mean(height, na.rm = TRUE)
+Xn
+
+Sn = sd(height, na.rm = TRUE)
+Sn
+```
+
+Направете отделни изчисления за мъжете и жените
+```{r}
+sex = survey$Sex
+menXn = mean(height[sex == 'Male'], na.rm = TRUE)
+'Male Average'
+menXn
+menSn = sd(height[sex == 'Male'], na.rm = TRUE)
+'Male Standard deviation'
+menSn
+
+femaleXn = mean(height[sex == 'Female'], na.rm = TRUE)
+'Female Average'
+femaleXn
+femaleSn = sd(height[sex == 'Female'], na.rm = TRUE)
+'Female Standard deviation'
+femaleSn
+```
+
+Каква част от студентите попадат в интервалите:
+а) (Xn - Sn, Xn + Sn)
+```{r}
+sum(height > Xn - Sn & height < Xn + Sn, na.rm = TRUE)
+```
+б) (Xn - 2Sn, Xn + 2Sn)
+```{r}
+sum(height > Xn - 2*Sn & height < Xn + 2*Sn, na.rm = TRUE)
+```
+в) (Xn - 3Sn, Xn + 3Sn)
+```{r}
+sum(height > Xn - 3*Sn & height < Xn + 3*Sn, na.rm = TRUE)
+```
+
+## Зад.2
+Представете графично височината на студентите. Постройте боксплот и хистограма, добавете полигона и плътността. Направете отделни графики за мъжете и за жените
+```{r}
+boxplot(height ~ sex)
+
+hist(height[sex == 'Male'], probability = T)
+lines(density(height[sex == 'Male'], na.rm = T) )
+
+hist(height[sex == 'Female'], probability = T)
+lines(density(height[sex == 'Female'], na.rm = T))
+```
+
+## Зад.3
+Направете хистограма за пулса на студентите. Добавете плътността
+```{r}
+pulse = survey$Pulse
+hist(pulse, probability = TRUE)
+lines(density(pulse, na.rm = T))
+```
+
+## Зад.4
+Разглеждаме таблизате 'homedata' от пакета 'UsingR'.
+```{r}
+library(UsingR)
+data('homedata')
+homedata
+```
+Представете променливите графично - поотделни, както и заедно. Пресметнете корелазията.
+```{r}
+y1970 = homedata$y1970
+hist(y1970, probability = TRUE)
+lines(density(y1970, na.rm = TRUE))
+
+y2000 = homedata$y2000
+hist(y2000, probability = TRUE)
+lines(density(y2000, na.rm = TRUE))
+
+plot(density(y1970, na.rm=TRUE), col='red')
+lines(density(y2000, na.rm=TRUE), col='blue')
+```
+
