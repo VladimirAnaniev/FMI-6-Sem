@@ -1,0 +1,70 @@
+---
+title: "R Notebook"
+output:
+  html_notebook: default
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+<center><h1>Вероятности и Статистика</h1></center>
+<center><h2>Домашно 1</h2></center>
+<center><h2>Владимир Ананиев, 81459</h2></center>
+<strong>Зад. 1</strong> Определете променливите съдържащи се в данните "survey" от пакета "MASS".
+  Вземете 50 случайно избрани наблюдения. 
+```{r}
+library('MASS')
+colnames(survey)
+
+indexes = sample(nrow(survey), 50)
+students = survey[indexes,]
+rownames(students) = 1:nrow(students)
+students
+
+```
+  
+Въз основа на тези наблюдения: </br>
+<strong>а)</strong> Отпечатайте пълните данни за най-младата жена.
+```{r}
+women = students[students$Sex == 'Female',]
+women_by_age = women[order(women$Age),]
+youngest_woman = women_by_age[1,]
+youngest_woman
+```
+<strong>б)</strong> Определете пола на 3-те най-високи студента.
+```{r}
+students_by_height = students[order(-students$Height),]
+highest_3_sex = students_by_height[1:3, 'Sex']
+highest_3_sex
+```
+<strong>в)</strong> Определете средната възраст на мъжете с пулс над 80.
+```{r}
+men = students[students$Sex == 'Male',]
+men_over_80_pulse = men[men$Pulse > 80,]
+mean(men_over_80_pulse$Age, na.rm = TRUE)
+```
+<strong>г)</strong> Постройте боксплот на "Height" в зависимост от "Exer".
+```{r}
+exer = students$Exer
+height = students$Height
+boxplot(height~exer, horizontal = TRUE)
+```
+
+
+<strong>Зад. 2</strong> Нека X и Y са последните две цифри на факултетния ви номер, т.е ???<strong>XY</strong>. Генерирайте 50 случайни наблюдения в равномерно разпределение в интервала [0; X+1] и 5- случайни наблюдения експоненциално разпределени с параметър λ = 1/(Y + 1)
+```{r}
+uniform = runif(50, 0, 5)
+exponential = rexp(50, rate=1/10)
+```
+<strong>a)</strong> Постройте боксплот на двете извадки на една графика, направете извод.
+```{r}
+boxplot(uniform, exponential, horizontal = TRUE, names = c('Uniform', 'Exponential'), col = c("darkgreen", "gold"))
+```
+За <strong>равномерното</strong> разпределение се вижда, че четирите квартила са почти равни. Медианата е точно по средата - 2.5. Минималните и максимилните стойности съответно са 0 и 5. </br>
+За <strong>експоненциалното</strong> разпределение се вижда, че ... TODO
+
+<strong>б)</strong> Постройте хистограма за експоненциалните данни. На същата графика начертайте плътността построена по данните и теоритичната плътност.
+```{r}
+hist(exponential)
+lines(density(exponential))
+# TODO
+```
