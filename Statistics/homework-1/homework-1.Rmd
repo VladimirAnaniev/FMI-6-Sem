@@ -13,58 +13,98 @@ output:
   Вземете 50 случайно избрани наблюдения. 
 ```{r}
 library('MASS')
-colnames(survey)
 
 indexes = sample(nrow(survey), 50)
 students = survey[indexes,]
-rownames(students) = 1:nrow(students)
+attach(students)
 students
-
 ```
   
 Въз основа на тези наблюдения: </br>
 <strong>а)</strong> Отпечатайте пълните данни за най-младата жена.
 ```{r}
-women = students[students$Sex == 'Female',]
-women_by_age = women[order(women$Age),]
-youngest_woman = women_by_age[1,]
-youngest_woman
+women = students[Sex == 'Female',]
+women_by_age = women[order(Age),]
+women_by_age[1,]
 ```
 <strong>б)</strong> Определете пола на 3-те най-високи студента.
 ```{r}
-students_by_height = students[order(-students$Height),]
-highest_3_sex = students_by_height[1:3, 'Sex']
-highest_3_sex
+students_by_height = students[order(-Height),]
+students_by_height[1:3, 'Sex']
 ```
 <strong>в)</strong> Определете средната възраст на мъжете с пулс над 80.
 ```{r}
-men = students[students$Sex == 'Male',]
-men_over_80_pulse = men[men$Pulse > 80,]
-mean(men_over_80_pulse$Age, na.rm = TRUE)
+men_over_80_pulse = students[Sex == 'Male' & Pulse > 80,]
+mean(Age, na.rm = TRUE)
 ```
 <strong>г)</strong> Постройте боксплот на "Height" в зависимост от "Exer".
 ```{r}
-exer = students$Exer
-height = students$Height
-boxplot(height~exer, horizontal = TRUE)
+boxplot(Height~Exer, horizontal = TRUE)
 ```
 
 
-<strong>Зад. 2</strong> Нека X и Y са последните две цифри на факултетния ви номер, т.е ???<strong>XY</strong>. Генерирайте 50 случайни наблюдения в равномерно разпределение в интервала [0; X+1] и 5- случайни наблюдения експоненциално разпределени с параметър λ = 1/(Y + 1)
+<strong>Зад. 2</strong> Нека <em>X</em> и <em>Y</em> са последните две цифри на факултетния ви номер, т.е ???<strong>XY</strong>. Генерирайте 50 случайни наблюдения в равномерно разпределение в интервала [0; X+1] и 5- случайни наблюдения експоненциално разпределени с параметър <em>λ = 1/(Y + 1)</em>
 ```{r}
-uniform = runif(50, 0, 5)
-exponential = rexp(50, rate=1/10)
+X = 5
+Y = 10
+uniform = runif(50, 0, X)
+exponential = rexp(50, rate=1/Y)
 ```
 <strong>a)</strong> Постройте боксплот на двете извадки на една графика, направете извод.
 ```{r}
 boxplot(uniform, exponential, horizontal = TRUE, names = c('Uniform', 'Exponential'), col = c("darkgreen", "gold"))
 ```
-За <strong>равномерното</strong> разпределение се вижда, че четирите квартила са почти равни. Медианата е точно по средата - 2.5. Минималните и максимилните стойности съответно са 0 и 5. </br>
-За <strong>експоненциалното</strong> разпределение се вижда, че ... TODO
-
 <strong>б)</strong> Постройте хистограма за експоненциалните данни. На същата графика начертайте плътността построена по данните и теоритичната плътност.
 ```{r}
-hist(exponential)
-lines(density(exponential))
-# TODO
+hist(exponential, probability = TRUE)
+lines(density(exponential), col='darkgreen')
+
+z = seq(0, 50, 1)
+y = dexp(z, 1/Y)
+lines(z, y, col='red')
+
+legend('topright', legend=c('Data', 'Theoretical'), col=c('darkgreen', 'red'), lty=1:1)
+```
+
+<strong>Зад. 3</strong> Нека <em>X<sub>1</sub>, X<sub>2</sub>, X<sub>3</sub></em> са случайно избрани различни цели числа в интервала [1, T]. Напишете функция <em>f(k,T,n)</em>, която по направени <em>n</em> на брой санлюдения над <em>X<sub>1</sub>, X<sub>2</sub>, X<sub>3</sub></em> пресмята емпиричната вероятност да е изпълнено <em>X<sub>1</sub>+2X<sub>2</sub>+3X<sub>3</sub>=k</em>, където <em>k</em> е цяло число. Генерирайте случайно <em>T</em> в интервала [1,10] и случайно <em>k</em> в интервала [10,30] и пресметнете търсената вероятност.
+```{r}
+f <- function(k, T, n){
+  counter = 0
+  for(i in 1:n){
+    X = sample(1:T, 3, replace = TRUE)
+    sum = X[1] + 2*X[2] + 3*X[3]
+    if (sum == k) {
+      counter = counter+1
+    }
+  }
+  return (counter / n)
+}
+
+T = sample(1:10, 1)
+k = sample(10:30, 1)
+
+for(n in c(100,1000,10000,100000,1000000)) {
+  prob = f(k, T, n)
+  res = sprintf("f(%d, %d, %d) = %f", k, T, n, prob)
+  print(res)
+}
+
+```
+
+<strong>Зад. 4</strong> Нека случайната величина <strong>X</strong> е гамма разпределена с параметри 2 и 0.5.
+```{r}
+X = rgamma(1000, 2, 0.5)
+```
+Определете:
+<strong>a)</strong> P(X>2)
+```{r}
+1 - pgamma(2, 2, 0.5)
+```
+<strong>б)</strong> c, така че P(X>c) = 0.35
+```{r}
+qgamma(0.65, 2, 0.5)
+```
+<strong>в)</strong> Q1, M, Q3.
+```{r}
+summary(X)
 ```
