@@ -6,7 +6,7 @@ sealed trait Validated[+E, +A] {
     case Valid(_) => true
   }
 
-  def get[B >: A] = this match {
+  def get[B >: A]: A = this match {
     case Valid(a) => a
     case _ => throw new IllegalAccessError("Called get on invalid Validated!")
   }
@@ -69,8 +69,7 @@ object Validated {
       if (values.forall(_.isValid))
         Valid((tuple._1.get, tuple._2.get, tuple._3.get))
       else
-        // TODO: Hacky solution.. try to clean it up
-        values.reduce((a, b) => a.zip(b).asInstanceOf[Validated[EE, (A, B, C)]]).asInstanceOf[Validated[EE, (A, B, C)]]
+        values.reduce((a, b) => a.zip(b)).asInstanceOf[Validated[EE, (A, B, C)]]
     }
 
     def zipMap[R](f: (A, B, C) => R): Validated[EE, R] = zip map f.tupled
@@ -84,8 +83,7 @@ object Validated {
       if (values.forall(_.isValid))
         Valid((tuple._1.get, tuple._2.get, tuple._3.get, tuple._4.get))
       else
-      // TODO: Hacky solution.. try to clean it up
-        values.reduce((a, b) => a.zip(b).asInstanceOf[Validated[EE, (A, B, C, D)]]).asInstanceOf[Validated[EE, (A, B, C, D)]]
+        values.reduce((a, b) => a.zip(b)).asInstanceOf[Validated[EE, (A, B, C, D)]]
     }
 
     def zipMap[R](f: (A, B, C, D) => R): Validated[EE, R] = zip map f.tupled
@@ -99,8 +97,7 @@ object Validated {
       if (values.forall(_.isValid))
         Valid((tuple._1.get, tuple._2.get, tuple._3.get, tuple._4.get, tuple._5.get))
       else
-      // TODO: Hacky solution.. try to clean it up
-        values.reduce((a, b) => a.zip(b).asInstanceOf[Validated[EE, (A, B, C, D, E)]]).asInstanceOf[Validated[EE, (A, B, C, D, E)]]
+        values.reduce((a, b) => a.zip(b)).asInstanceOf[Validated[EE, (A, B, C, D, E)]]
     }
 
     def zipMap[R](f: (A, B, C, D, E) => R): Validated[EE, R] = zip map f.tupled
@@ -112,5 +109,4 @@ object Validated {
       case Some(value) => Valid(value)
     }
   }
-
 }
